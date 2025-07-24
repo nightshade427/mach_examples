@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 400" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace" font-size="13">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#64748b"/>
+    </marker>
+    <marker id="ar-o" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#f97316"/>
+    </marker>
+    <marker id="ar-b" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#3b82f6"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-size: 16px; font-weight: 700; fill: #1e293b; }
+    .subtitle { font-size: 11px; fill: #94a3b8; }
+    .label { font-size: 12px; font-weight: 600; }
+    .sm { font-size: 11px; }
+    .xs { font-size: 10px; }
+    .note { font-size: 10px; fill: #94a3b8; font-style: italic; }
+    .step-light { font-size: 11px; fill: #fff; }
+  </style>
+
+  <text x="440" y="32" text-anchor="middle" class="title">SSE Channel Model</text>
+  <text x="440" y="50" text-anchor="middle" class="subtitle">clients connect to a channel — pipeline steps push events to all subscribers</text>
+
+  <!-- ===== LEFT: Clients ===== -->
+  <text x="100" y="85" text-anchor="middle" class="label" style="fill:#475569">Clients</text>
+
+  <rect x="30" y="100" width="140" height="44" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="100" y="118" text-anchor="middle" class="sm" style="fill:#1d4ed8">Browser A</text>
+  <text x="100" y="134" text-anchor="middle" class="xs" style="fill:#3b82f6">user_id = 42</text>
+
+  <rect x="30" y="158" width="140" height="44" rx="6" fill="#dbeafe" stroke="#3b82f6" stroke-width="1"/>
+  <text x="100" y="176" text-anchor="middle" class="sm" style="fill:#1d4ed8">Browser B</text>
+  <text x="100" y="192" text-anchor="middle" class="xs" style="fill:#3b82f6">user_id = 42</text>
+
+  <rect x="30" y="216" width="140" height="44" rx="6" fill="#e2e8f0" stroke="#94a3b8" stroke-width="1"/>
+  <text x="100" y="234" text-anchor="middle" class="sm" style="fill:#475569">Browser C</text>
+  <text x="100" y="250" text-anchor="middle" class="xs" style="fill:#94a3b8">user_id = 99</text>
+
+  <!-- ===== MIDDLE: Channel ===== -->
+  <rect x="270" y="96" width="200" height="176" rx="10" fill="#1e293b"/>
+  <text x="370" y="122" text-anchor="middle" class="label" style="fill:#fff">MACH Channels</text>
+
+  <rect x="290" y="136" width="160" height="40" rx="5" fill="#f97316"/>
+  <text x="370" y="152" text-anchor="middle" class="step-light" style="font-weight:600">todos/42</text>
+  <text x="370" y="168" text-anchor="middle" class="xs" style="fill:#fed7aa">2 subscribers</text>
+
+  <rect x="290" y="190" width="160" height="40" rx="5" fill="#475569"/>
+  <text x="370" y="206" text-anchor="middle" class="step-light" style="font-weight:600">todos/99</text>
+  <text x="370" y="222" text-anchor="middle" class="xs" style="fill:#94a3b8">1 subscriber</text>
+
+  <!-- Client → Channel connections -->
+  <line x1="170" y1="122" x2="288" y2="150" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-b)"/>
+  <line x1="170" y1="180" x2="288" y2="160" stroke="#3b82f6" stroke-width="1.5" marker-end="url(#ar-b)"/>
+  <line x1="170" y1="238" x2="288" y2="210" stroke="#94a3b8" stroke-width="1" marker-end="url(#ar)"/>
+
+  <!-- Connection label -->
+  <text x="225" y="110" text-anchor="middle" class="xs" style="fill:#3b82f6">.sse verb</text>
+
+  <!-- ===== RIGHT: Pipeline pushes ===== -->
+  <text x="660" y="85" text-anchor="middle" class="label" style="fill:#475569">Pipeline Steps Push to Channel</text>
+
+  <rect x="550" y="104" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="660" y="126" text-anchor="middle" class="sm" style="fill:#475569">sse((s){</text>
+  <text x="660" y="143" text-anchor="middle" class="xs" style="fill:#64748b">.channel = "todos/{{user_id}}"})</text>
+
+  <rect x="550" y="168" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="660" y="190" text-anchor="middle" class="sm" style="fill:#475569">datastar((ds){</text>
+  <text x="660" y="207" text-anchor="middle" class="xs" style="fill:#64748b">.channel = "todos/{{user_id}}"})</text>
+
+  <rect x="550" y="232" width="220" height="50" rx="6" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="660" y="254" text-anchor="middle" class="sm" style="fill:#475569">respond_sse((s){</text>
+  <text x="660" y="271" text-anchor="middle" class="xs" style="fill:#64748b">.channel = channel})</text>
+
+  <!-- Pipeline → Channel arrows -->
+  <line x1="548" y1="129" x2="472" y2="150" stroke="#f97316" stroke-width="2" marker-end="url(#ar-o)"/>
+  <line x1="548" y1="193" x2="472" y2="160" stroke="#f97316" stroke-width="2" marker-end="url(#ar-o)"/>
+  <line x1="548" y1="257" x2="472" y2="165" stroke="#f97316" stroke-width="1.5" marker-end="url(#ar-o)"/>
+
+  <!-- ===== BOTTOM: Notes ===== -->
+  <rect x="40" y="310" width="800" height="70" rx="8" fill="#fff7ed" stroke="#f97316" stroke-width="1"/>
+
+  <text x="60" y="335" class="sm" style="fill:#9a3412; font-weight:600">With .channel</text>
+  <text x="200" y="335" class="sm" style="fill:#78350f">→ pushes to all connected clients on that channel</text>
+
+  <text x="60" y="360" class="sm" style="fill:#9a3412; font-weight:600">Without .channel</text>
+  <text x="200" y="360" class="sm" style="fill:#78350f">→ responds directly to the current request</text>
+</svg>

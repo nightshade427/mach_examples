@@ -1,0 +1,16 @@
+{{< layout}}
+  {{$body}}
+    <form action="/todos" method="post">
+      <input type="text" name="title" placeholder="new todo" required>
+      <button type="submit">add</button>
+    </form>
+    {{^todos}}
+      <p>no todos</p>
+    {{/todos}}
+    {{#todos}}
+      {{#.}}
+        {{> todo}}
+      {{/.}}
+    {{/todos}}
+  {{/body}}
+{{/layout}}

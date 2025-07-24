@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 340" font-family="'SF Mono', 'Fira Code', 'Cascadia Code', monospace" font-size="13">
+  <defs>
+    <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L8,3 L0,6" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <style>
+    .title { font-size: 16px; font-weight: 700; fill: #1e293b; }
+    .subtitle { font-size: 11px; fill: #94a3b8; }
+    .label { font-size: 12px; font-weight: 600; }
+    .sm { font-size: 10.5px; }
+    .note { font-size: 10px; fill: #94a3b8; font-style: italic; }
+  </style>
+
+  <text x="440" y="32" text-anchor="middle" class="title">Hot Module Replacement</text>
+  <text x="440" y="50" text-anchor="middle" class="subtitle">save → compile → reload — server never stops, connections never drop</text>
+
+  <!-- Step 1: File save -->
+  <rect x="30" y="80" width="150" height="100" rx="8" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="105" y="105" text-anchor="middle" class="label" style="fill:#475569">1. Save File</text>
+  <text x="105" y="125" text-anchor="middle" class="sm" style="fill:#64748b">main.c</text>
+  <text x="105" y="140" text-anchor="middle" class="sm" style="fill:#64748b">*.mustache.html</text>
+  <text x="105" y="155" text-anchor="middle" class="sm" style="fill:#64748b">*.sql</text>
+  <text x="105" y="170" text-anchor="middle" class="note">#embed tracked too</text>
+
+  <line x1="180" y1="130" x2="208" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Step 2: Compile -->
+  <rect x="216" y="80" width="150" height="100" rx="8" fill="#dbeafe" stroke="#3b82f6"/>
+  <text x="291" y="105" text-anchor="middle" class="label" style="fill:#1d4ed8">2. Compile</text>
+  <text x="291" y="128" text-anchor="middle" class="sm" style="fill:#3b82f6">gcc → .so</text>
+  <text x="291" y="148" text-anchor="middle" class="sm" style="fill:#3b82f6">shared object</text>
+  <text x="291" y="170" text-anchor="middle" class="note">instant with C23</text>
+
+  <line x1="366" y1="130" x2="394" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Step 3: Load -->
+  <rect x="402" y="80" width="150" height="100" rx="8" fill="#fef3c7" stroke="#f59e0b"/>
+  <text x="477" y="105" text-anchor="middle" class="label" style="fill:#92400e">3. Reload</text>
+  <text x="477" y="128" text-anchor="middle" class="sm" style="fill:#b45309">dlopen(.so)</text>
+  <text x="477" y="148" text-anchor="middle" class="sm" style="fill:#b45309">call mach()</text>
+  <text x="477" y="170" text-anchor="middle" class="note">new config loaded</text>
+
+  <line x1="552" y1="130" x2="580" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Step 4: Diff & Patch -->
+  <rect x="588" y="80" width="150" height="100" rx="8" fill="#dcfce7" stroke="#22c55e"/>
+  <text x="663" y="105" text-anchor="middle" class="label" style="fill:#166534">4. Patch</text>
+  <text x="663" y="128" text-anchor="middle" class="sm" style="fill:#15803d">diff old ↔ new</text>
+  <text x="663" y="148" text-anchor="middle" class="sm" style="fill:#15803d">patch DoD tree</text>
+  <text x="663" y="170" text-anchor="middle" class="note">in-memory update</text>
+
+  <line x1="738" y1="130" x2="766" y2="130" stroke="#64748b" stroke-width="1.5" marker-end="url(#ar)"/>
+
+  <!-- Step 5: Live -->
+  <rect x="774" y="80" width="80" height="100" rx="8" fill="#1e293b"/>
+  <text x="814" y="125" text-anchor="middle" class="label" style="fill:#fff">5.</text>
+  <text x="814" y="145" text-anchor="middle" class="sm" style="fill:#22c55e">Live</text>
+
+  <!-- Runtime bar -->
+  <rect x="30" y="220" width="824" height="55" rx="8" fill="#1e293b"/>
+  <text x="60" y="245" class="label" style="fill:#94a3b8">MACH RUNTIME</text>
+  <text x="60" y="262" class="sm" style="fill:#64748b">persistent process — never restarts — active connections maintained</text>
+  <rect x="560" y="230" width="280" height="36" rx="5" fill="#334155"/>
+  <text x="700" y="253" text-anchor="middle" class="sm" style="fill:#cbd5e1">reactors continue executing</text>
+
+  <!-- Separation line -->
+  <line x1="30" y1="205" x2="854" y2="205" stroke="#475569" stroke-dasharray="6,4" stroke-width="1"/>
+  <text x="440" y="200" text-anchor="middle" class="note">your code (hot-swappable) ↑ — runtime (persistent) ↓</text>
+
+  <!-- Bottom note -->
+  <rect x="30" y="295" width="824" height="30" rx="6" fill="#f8fafc" stroke="#e2e8f0"/>
+  <text x="440" y="315" text-anchor="middle" class="sm" style="fill:#64748b">config is data, not code — the runtime diffs data structures, not source files</text>
+</svg>

@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <link rel='icon' href='/favicon.png'>
+  </head>
+  <body>
+    <p>
+      {{^user}}
+        <a href='/login'>sign in</a>
+      {{/user}}
+      {{#user}}
+        welcome, {{first_name}}
+      {{/user}}
+    </p>
+    <nav>
+      <a href='/'>home</a>
+      <a href='/about'>about us</a>
+      <a href='/contact'>contact us</a>
+      <a href='/todos'>todos</a>
+    </nav>
+    {{$body}}
+    {{/body}}
+  </body>
+</html>
