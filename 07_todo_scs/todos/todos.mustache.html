@@ -1,0 +1,13 @@
+{{< layout}}
+  {{$body}}
+    {{^todos}}
+      <p>no todos</p>
+    {{/todos}}
+    {{#todos}}
+      <p>todos</p>
+      {{#.}}
+        {{> todo}}
+      {{/.}}
+    {{/todos}}
+  {{/body}}
+{{/layout}};
