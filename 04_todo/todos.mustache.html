@@ -1,0 +1,32 @@
+{{< layout}}
+  {{$body}}
+    <form action="{{url:todos}}" method="post">
+      <input type="text" name="title" placeholder="new todo" required>
+      <button type="submit">add</button>
+    </form>
+    {{^todos}}
+      <p>no todos</p>
+    {{/todos}}
+    {{#todos}}
+      {{#.}}
+        <div>
+          <form action="{{url:todo:id}}" method="post" style="display:inline">
+            <input type="hidden" name="http_method" value="patch">
+            {{^finished}}
+              <input type="checkbox" name="finished" value="1">
+            {{/finished}}
+            {{#finished}}
+              <input type="checkbox" name="finished" value="1" checked>
+            {{/finished}}
+            {{title}}
+            <button type="submit">save</button>
+          </form>
+          <form action="{{url:todo:id}}" method="post" style="display:inline">
+            <input type="hidden" name="http_method" value="delete">
+            <button type="submit">delete</button>
+          </form>
+        </div>
+      {{/.}}
+    {{/todos}}
+  {{/body}}
+{{/layout}}
