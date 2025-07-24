@@ -1,0 +1,24 @@
+{{< layout}}
+  {{$body}}
+    <div class="flex items-center justify-between mb-8">
+      <h1 class="text-3xl font-bold text-gray-900">All Posts</h1>
+      <a href="{{url:new_post}}"
+         class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition">
+        New Post
+      </a>
+    </div>
+
+    {{#posts}}
+      {{> post_card}}
+    {{/posts}}
+
+    {{^posts}}
+      <div class="text-center py-16 text-gray-400">
+        <p class="text-xl">No posts yet.</p>
+        <a href="{{url:new_post}}" class="text-blue-600 hover:underline mt-2 inline-block">
+          Write your first post
+        </a>
+      </div>
+    {{/posts}}
+  {{/body}}
+{{/layout}}
