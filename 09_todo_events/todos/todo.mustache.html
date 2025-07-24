@@ -1,0 +1,17 @@
+<div>
+  <form action="/todos/{{id}}" method="post" style="display:inline">
+    <input type="hidden" name="http_method" value="PATCH">
+    {{^finished}}
+      <input type="checkbox" name="finished" value="1">
+    {{/finished}}
+    {{#finished}}
+      <input type="checkbox" name="finished" value="1" checked>
+    {{/finished}}
+    {{title}}
+    <button type="submit">save</button>
+  </form>
+  <form action="/todos/{{id}}" method="post" style="display:inline">
+    <input type="hidden" name="http_method" value="delete">
+    <button type="submit">delete</button>
+  </form>
+</div>
