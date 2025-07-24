@@ -1,0 +1,20 @@
+<html>
+  <head>
+    <link rel='icon' href='/favicon.png'>
+  </head>
+  <body>
+    <p>
+      {{^user}}
+        <a href='{{:url:login}}'>sign in</a>
+      {{/user}}
+      {{#user}}
+        welcome, {{first_name}}
+      {{/user}}
+    </p>
+    <nav>
+      <a href='{{:url:home}}'>home</a>
+    </nav>
+    {{$body}}
+    {{/body}}
+  </body>
+</html>
