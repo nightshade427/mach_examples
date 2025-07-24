@@ -1,0 +1,13 @@
+{{< layout}}
+  {{$body}}
+    {{^has_todos}}
+      <p>no todos</p>
+    {{/has_todos}}
+    {{#has_todos}}
+      <p>todos</p>
+      <div id="todos">
+        {{> todo}}
+      </div>
+    {{/has_todos}}
+  {{/body}}
+{{/layout}}
