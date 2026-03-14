@@ -91,16 +91,15 @@ config mach() {
 }
 ```
 
-Core Concepts
+## Core Concepts
 
-Modules
+### Modules
 
 A module encapsulates its own routes, databases, and templates. Modules are composed in main.c via the .includes array.
 
 Example: A simple todos module that provides its own database and routes.
-
-In ./todos/todos.c:
 ```c
+/todos/todos.c
 #include <mach.h>
 #include <sqlite.h>
 
@@ -133,6 +132,7 @@ config todos_config() {
 In main.c you include it:
 
 ```c
+// main.c
 #include <mach.h>
 #include "todos/todos.c"
 
@@ -143,11 +143,13 @@ config mach() {
 }
 ```
 
-Resolution
+### Resolution
 
-· Registrations (Top‑Down): Named registrations (databases, context keys, resources) resolve top‑down. The first definition wins, allowing main.c to override any module default.
-· Middleware (Chained): Pipeline steps defined in .before and .after chain top‑down across all scopes.
-· Errors (Bottom‑Up): Unhandled .errors resolve bottom‑up, starting at the URL level and bubbling up to the app level.
+Registrations (Top‑Down): Named registrations (databases, context keys, resources) resolve top‑down. The first definition wins, allowing main.c to override any module default.
+
+Middleware (Chained): Pipeline steps defined in .before and .after chain top‑down across all scopes.
+
+Errors (Bottom‑Up): Unhandled .errors resolve bottom‑up, starting at the URL level and bubbling up to the app level.
 
 Example: Override a database connection string from a module.
 
@@ -166,7 +168,7 @@ config mach() {
 }
 ```
 
-Pipelines
+### Pipelines
 
 A pipeline is a sequence of steps that share a context. Steps execute in order, and asynchronous steps (like database queries) run concurrently where possible.
 
@@ -184,7 +186,7 @@ Example: A pipeline that validates input, inserts a record, and renders a respon
 }}}
 ```
 
-Embeds & Context
+### Embeds & Context
 
 Use #embed to load external files (templates, SQL) and inject values via .context. Context keys are interpolated in templates using {{key}}.
 
@@ -207,13 +209,13 @@ For one‑off templates, embed directly:
 render((r){ (asset){ #embed "templates/special.html" } })
 ```
 
-Configuration
+## Configuration
 
-Global Configuration
+### Global Configuration
 
 Defined once at the application or module level.
 
-Includes
+#### Includes
 
 Compose your application from built-in or custom modules. All modules listed at the top are built in and available for inclusion.
 
@@ -221,7 +223,7 @@ Compose your application from built-in or custom modules. All modules listed at 
 .includes = { sqlite_config, datastar_config, session_auth_config, todos_config }
 ```
 
-Databases
+#### Databases
 
 Declare data and schemas. MACH follows the IDEAL philosophy, each module owns its own schema and migrations. Supports multi-tenant databases via context interpolation.
 
@@ -237,7 +239,7 @@ Declare data and schemas. MACH follows the IDEAL philosophy, each module owns it
 }
 ```
 
-Resources
+#### Resources
 
 Define URLs, MIME types, and HTTP verb pipelines.
 
@@ -257,7 +259,7 @@ Define URLs, MIME types, and HTTP verb pipelines.
 }
 ```
 
-Publish & Subscribe
+#### Publish & Subscribe
 
 Publish: defines the schema of events this module emits (.publish).
 
@@ -277,9 +279,9 @@ Subscribe: event pipelines that run automatically when specific events fire; the
 }
 ```
 
-Scoped Configuration
+### Scoped Configuration
 
-Middleware (.before & .after)
+#### Middleware (.before & .after)
 
 Chained pipelines for common tasks like authentication or session management that apply to all resources in a scope.
 
@@ -288,7 +290,7 @@ Chained pipelines for common tasks like authentication or session management tha
 .after = { emit((e){"request_completed"}) }
 ```
 
-Errors
+#### Errors
 
 Declarative error handlers matching specific HTTP status codes, resolving bottom-up.
 
@@ -298,7 +300,7 @@ Declarative error handlers matching specific HTTP status codes, resolving bottom
 }
 ```
 
-Context
+#### Context
 
 Inject assets or static strings into the request context.
 
@@ -311,7 +313,7 @@ Inject assets or static strings into the request context.
 }
 ```
 
-Pipeline API
+## Pipeline API
 
 Declarative Steps
 
