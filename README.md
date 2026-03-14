@@ -142,42 +142,6 @@ Everything in MACH is declared in config structs. Definitions can be scoped to t
 
 **Errors (Bottom-Up):** Unhandled `.errors` resolve bottom-up, starting at the URL level and bubbling up to the app level.
 
-#### Example
-
-```c
-// main.c (app level)
-config app() {
-  return (config){
-    .errors = {
-      {http_not_found, {{ render((r){.asset = "app_404"}) }}}   // app-level 404
-    },
-    .includes = { user_module }
-  };
-}
-
-// user_module.c (module level)
-config user_module() {
-  return (config){
-    .resources = {
-      .urls = {
-        {"/profile",
-          .errors = {
-            {http_not_found, {{ render((r){.asset = "user_404"}) }}}  // module-level 404
-          },
-          .get = {{ db(...), render(...) }}
-        }
-      }
-    }
-  };
-}
-```
-
-- If a request to `/profile` triggers a 404, the module's error handler runs (bottom-up starts at the URL, then module, then app).
-- If the module doesn't define a 404 handler, the app-level one is used.
-- This bottom-up resolution lets you define fallbacks while keeping error handling local.
-
-For top-down registrations (like databases or context keys), the first definition wins - so `main.c` can override a module's default.
-
 ### Pipelines
 
 MACH is data-oriented. It runs sequentially through an ordered pipeline of handlers that all share the same pipeline context. Pipeline steps are executed asynchronously when needed (e.g. during database or network I/O).
