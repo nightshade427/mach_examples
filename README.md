@@ -122,14 +122,6 @@ A typical multi-module directory structure:
     └── 404.mustache.html
 ```
 
-### Locality of Behavior (LoB)
-
-MACH emphasizes Locality of Behavior. It prefers templates, queries, errors, and pipelines to be defined as local as possible to where they are used. The global context is reserved for cross-cutting configurations that must be universally available.
-
-### Safe C
-
-You do not write async/await, spawn threads, or call malloc and free. The MACH runtime handles memory management, concurrency, and async logic for you.
-
 ### Config & Scopes
 
 Everything in MACH is declared in config structs. Definitions can be scoped to the application, module, resource, or specific URL level.
