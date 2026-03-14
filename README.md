@@ -42,9 +42,9 @@ wget https://docker.nightshadecoder.dev/mach/compose.yml
 docker compose up
 ```
 
-After the container starts, create main.c with the Hello World example below - it will be automatically compiled and reloaded. You can also attach to the TUI with docker compose attach mach for an integrated editor and console.
+After the container starts, create `main.c` with the Hello World example below - it will be automatically compiled and reloaded. You can also attach to the TUI with `docker compose attach mach` for an integrated editor and console.
 
-Hello World
+### Hello World
 
 ```c
 #include <mach.h>
@@ -95,11 +95,12 @@ config mach() {
 
 ### Modules
 
-A module encapsulates its own routes, databases, and templates. Modules are composed in main.c via the .includes array.
+A module encapsulates its own routes, databases, and templates. Modules are composed in `main.c` via the `.includes` array.
 
-Example: A simple todos module that provides its own database and routes.
+**Example:** A simple `todos` module that provides its own database and routes.
+
 ```c
-/todos/todos.c
+// todos/todos.c
 #include <mach.h>
 #include <sqlite.h>
 
@@ -129,10 +130,9 @@ config todos_config() {
 }
 ```
 
-In main.c you include it:
+In `main.c` you include it:
 
 ```c
-// main.c
 #include <mach.h>
 #include "todos/todos.c"
 
@@ -145,13 +145,13 @@ config mach() {
 
 ### Resolution
 
-Registrations (Top‑Down): Named registrations (databases, context keys, resources) resolve top‑down. The first definition wins, allowing main.c to override any module default.
+- **Registrations (Top‑Down):** Named registrations (databases, context keys, resources) resolve top‑down. The first definition wins, allowing `main.c` to override any module default.
 
-Middleware (Chained): Pipeline steps defined in .before and .after chain top‑down across all scopes.
+- **Middleware (Chained):** Pipeline steps defined in `.before` and `.after` chain top‑down across all scopes.
 
-Errors (Bottom‑Up): Unhandled .errors resolve bottom‑up, starting at the URL level and bubbling up to the app level.
+- **Errors (Bottom‑Up):** Unhandled `.errors` resolve bottom‑up, starting at the URL level and bubbling up to the app level.
 
-Example: Override a database connection string from a module.
+**Example:** Override a database connection string from a module.
 
 ```c
 // todos/todos.c defines "todos_db" with connect = "file:todos.db"
@@ -172,7 +172,7 @@ config mach() {
 
 A pipeline is a sequence of steps that share a context. Steps execute in order, and asynchronous steps (like database queries) run concurrently where possible.
 
-Example: A pipeline that validates input, inserts a record, and renders a response.
+**Example:** A pipeline that validates input, inserts a record, and renders a response.
 
 ```c
 {"/users", .post = {{
@@ -188,9 +188,9 @@ Example: A pipeline that validates input, inserts a record, and renders a respon
 
 ### Embeds & Context
 
-Use #embed to load external files (templates, SQL) and inject values via .context. Context keys are interpolated in templates using {{key}}.
+Use `#embed` to load external files (templates, SQL) and inject values via `.context`. Context keys are interpolated in templates using `{{key}}`.
 
-Example: Embed a template and inject a site title.
+**Example:** Embed a template and inject a site title.
 
 ```c
 .context = {
@@ -215,7 +215,7 @@ render((r){ (asset){ #embed "templates/special.html" } })
 
 Defined once at the application or module level.
 
-#### Includes
+### Includes
 
 Compose your application from built-in or custom modules. All modules listed at the top are built in and available for inclusion.
 
@@ -223,7 +223,7 @@ Compose your application from built-in or custom modules. All modules listed at 
 .includes = { sqlite_config, datastar_config, session_auth_config, todos_config }
 ```
 
-#### Databases
+### Databases
 
 Declare data and schemas. MACH follows the IDEAL philosophy, each module owns its own schema and migrations. Supports multi-tenant databases via context interpolation.
 
@@ -239,7 +239,7 @@ Declare data and schemas. MACH follows the IDEAL philosophy, each module owns it
 }
 ```
 
-#### Resources
+### Resources
 
 Define URLs, MIME types, and HTTP verb pipelines.
 
@@ -259,11 +259,11 @@ Define URLs, MIME types, and HTTP verb pipelines.
 }
 ```
 
-#### Publish & Subscribe
+### Publish & Subscribe
 
-Publish: defines the schema of events this module emits (.publish).
+**Publish**: defines the schema of events this module emits (`.publish`).
 
-Subscribe: event pipelines that run automatically when specific events fire; they are defined in the .events array.
+**Subscribe**: event pipelines that run automatically when specific events fire; they are defined in the `.events` array.
 
 ```c
 .publish = {
@@ -281,7 +281,7 @@ Subscribe: event pipelines that run automatically when specific events fire; the
 
 ### Scoped Configuration
 
-#### Middleware (.before & .after)
+#### Middleware (`.before` & `.after`)
 
 Chained pipelines for common tasks like authentication or session management that apply to all resources in a scope.
 
@@ -315,26 +315,27 @@ Inject assets or static strings into the request context.
 
 ## Pipeline API
 
-Declarative Steps
+### Declarative Steps
 
-Step Description Example
-param Validates context parameter against a regex. param((p){.name="id", .validation="^\\d+$"})
-db Executes concurrent queries and injects results. db((d){{{.db="db", .query="select..."}}})
-render Renders a template using current context. render((r){ .asset = "home" })
-sse Pushes data to a persistent SSE channel. sse((s){.channel="c", .data={"hi"}})
-datastar Sends reactive DOM updates (Datastar protocol). Available in datastar module. datastar((ds){.channel="updates", .target="#stats", .elements=...})
-call Invokes a custom imperative C function. call((c){my_handler})
-emit Publishes internal events to trigger subscribers. emit((e){"user_signup"})
-redirect Client-side 302 redirect. redirect((u){"/login"})
-reroute Internal server-side reroute to another URL. reroute((u){"/dashboard"})
+| Step      | Description                                                                   | Example                                                                           |
+|-----------|-------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| `param`   | Validates context parameter against a regex.                                  | `param((p){.name="id", .validation="^\\d+$"})`                                   |
+| `db`      | Executes concurrent queries and injects results.                              | `db((d){{{.db="db", .query="select..."}}})`                                      |
+| `render`  | Renders a template using current context.                                     | `render((r){ .asset = "home" })`                                                  |
+| `sse`     | Pushes data to a persistent SSE channel.                                      | `sse((s){.channel="c", .data={"hi"}})`                                            |
+| `datastar`| Sends reactive DOM updates (Datastar protocol). Available in `datastar` module.| `datastar((ds){.channel="updates", .target="#stats", .elements=...})`            |
+| `call`    | Invokes a custom imperative C function.                                       | `call((c){my_handler})`                                                           |
+| `emit`    | Publishes internal events to trigger subscribers.                             | `emit((e){"user_signup"})`                                                        |
+| `redirect`| Client-side 302 redirect.                                                     | `redirect((u){"/login"})`                                                         |
+| `reroute` | Internal server-side reroute to another URL.                                  | `reroute((u){"/dashboard"})`                                                      |
 
-Datastar Module
+### Datastar Module
 
-The datastar module enables reactive DOM updates using the Datastar protocol. It integrates with your pipelines to send partial HTML updates over SSE channels. To use it, include datastar.h and add datastar_config to your .includes.
+The `datastar` module enables reactive DOM updates using the [Datastar](https://data-star.dev) protocol. It integrates with your pipelines to send partial HTML updates over SSE channels. To use it, include `datastar.h` and add `datastar_config` to your `.includes`.
 
-A typical Datastar step specifies an SSE channel, a target element (CSS selector), a merge mode, and the new HTML content (either as an inline template or a named asset from .context).
+A typical Datastar step specifies an SSE channel, a target element (CSS selector), a merge mode, and the new HTML content (either as an inline template or a named asset from `.context`).
 
-Example: Adding a new todo item and immediately updating the list via Datastar.
+**Example:** Adding a new todo item and immediately updating the list via Datastar.
 
 ```c
 #include <datastar.h>
@@ -382,7 +383,7 @@ config myapp() {
 }
 ```
 
-The todo.mustache.html template might look like:
+The `todo.mustache.html` template might look like:
 
 ```html
 <div id="todo_{{id}}">
@@ -391,17 +392,17 @@ The todo.mustache.html template might look like:
 </div>
 ```
 
-When the POST request succeeds, the new todo HTML is prepended to the #todo-list container for all clients subscribed to the todos/{{user_id}} SSE channel.
+When the POST request succeeds, the new todo HTML is prepended to the `#todo-list` container for all clients subscribed to the `todos/{{user_id}}` SSE channel.
 
-HTMX Module
+### HTMX Module
 
-The htmx module provides integration with the HTMX library. Include htmx.h and add htmx_config to your .includes. This makes HTMX attributes available in your templates and enables server‑side handling of HTMX requests (e.g., partial responses).
+The `htmx` module provides integration with the [HTMX](https://htmx.org) library. Include `htmx.h` and add `htmx_config` to your `.includes`. This makes HTMX attributes available in your templates and enables server‑side handling of HTMX requests (e.g., partial responses).
 
-Example Pipelines
+### Example Pipelines
 
 Here are longer examples showing how multiple steps combine in real-world scenarios.
 
-Form Handler with Validation and Database Insert
+#### Form Handler with Validation and Database Insert
 
 ```c
 {"/signup", .post = {{
@@ -417,7 +418,7 @@ Form Handler with Validation and Database Insert
 }}}
 ```
 
-Using Events
+#### Using Events
 
 ```c
 // In module config
@@ -433,64 +434,71 @@ Using Events
 }
 ```
 
-Custom Template Tags
+### Custom Template Tags
 
-Command Description
-{{:error:key}} Returns true if the key has a validation error
-{{:error_message:key}} Returns the error message string for the key
-{{:raw:key}} Outputs unescaped HTML
-{{:precision:key:n}} Formats a number to n decimal places
+| Command | Description |
+|---|---|
+| `{{:error:key}}` | Returns true if the key has a validation error |
+| `{{:error_message:key}}` | Returns the error message string for the key |
+| `{{:raw:key}}` | Outputs unescaped HTML |
+| `{{:precision:key:n}}` | Formats a number to n decimal places |
 
-Handler API
+## Handler API
 
-When you need custom logic, you drop into the imperative API via call().
+When you need custom logic, you drop into the imperative API via `call()`.
 
-Context Management
+### Context Management
 
-Function Description Example
-get(key) Read value from context auto id = get("id");
-set(key, val) Write value to context set("name", "Alice");
-has(key) Check if key exists if (has("user")) { ... }
-format(fmt) Interpolate context string auto msg = format("Hi {{name}}");
+| Function | Description | Example |
+|---|---|---|
+| `get(key)` | Read value from context | `auto id = get("id");` |
+| `set(key, val)` | Write value to context | `set("name", "Alice");` |
+| `has(key)` | Check if key exists | `if (has("user")) { ... }` |
+| `format(fmt)` | Interpolate context string | `auto msg = format("Hi {{name}}");` |
 
-Errors
+### Errors
 
-Function Description Example
-error_set(k, e) Set error on context error_set("age", (error){.code=400, .message="Invalid age"});
-error_get(k) Get error from context auto err = error_get("age");
+| Function | Description | Example |
+|---|---|---|
+| `error_set(k, e)` | Set error on context | `error_set("age", (error){.code=400, .message="Invalid age"});` |
+| `error_get(k)` | Get error from context | `auto err = error_get("age");` |
 
-Memory Management
+### Memory Management
 
-Function Description Example
-allocate(size) Arena-allocate memory (automatically freed at pipeline end) char* buf = allocate(1024);
-defer_free(ptr) Register an externally allocated pointer for automatic cleanup when the pipeline finishes. Use this when calling third‑party libraries that return malloced memory. char* ext = strdup("hello"); defer_free(ext);
+| Function | Description | Example |
+|---|---|---|
+| `allocate(size)` | Arena-allocate memory (automatically freed at pipeline end) | `char* buf = allocate(1024);` |
+| `defer_free(ptr)` | Register an externally allocated pointer for automatic cleanup when the pipeline finishes. Use this when calling third‑party libraries that return `malloc`ed memory. | `char* ext = strdup("hello"); defer_free(ext);` |
 
-Headers & Cookies
+### Headers & Cookies
 
-Function Description Example
-headers_set(k,v) Set response header headers_set("Content-Type", "application/json");
-cookies_set(k,v) Set response cookie cookies_set("sid", "xyz123");
+| Function | Description | Example |
+|---|---|---|
+| `headers_set(k,v)` | Set response header | `headers_set("Content-Type", "application/json");` |
+| `cookies_set(k,v)` | Set response cookie | `cookies_set("sid", "xyz123");` |
 
-Responses
+### Responses
 
-Function Description Example
-respond(status, r) Send response with a render step respond(http_ok, (r){ .asset = "home" });
-respond_sse(s) Send an SSE message respond_sse((s){.event="chat", .data={"hello"}});
-redirect_to(url) HTTP redirect (302) redirect_to("/login");
-reroute_to(url) Internal server‑side reroute reroute_to("/dashboard");
-emit_event(event) Fire an event (triggers subscribers) emit_event("user_signup");
+| Function | Description | Example |
+|---|---|---|
+| `respond(status, r)` | Send response with a render step | `respond(http_ok, (r){ .asset = "home" });` |
+| `respond_sse(s)` | Send an SSE message | `respond_sse((s){.event="chat", .data={"hello"}});` |
+| `redirect_to(url)` | HTTP redirect (302) | `redirect_to("/login");` |
+| `reroute_to(url)` | Internal server‑side reroute | `reroute_to("/dashboard");` |
+| `emit_event(event)` | Fire an event (triggers subscribers) | `emit_event("user_signup");` |
 
-Tables & Records
+### Tables & Records
 
-Function Description Example
-table_new() Create empty table auto t = table_new();
-record_get(r, k) Get field value auto email = record_get(row, "email");
-table_add(t, r) Add record to table table_add(users, new_user);
-table_count(t) Number of records int n = table_count(t);
+| Function | Description | Example |
+|---|---|---|
+| `table_new()` | Create empty table | `auto t = table_new();` |
+| `record_get(r, k)` | Get field value | `auto email = record_get(row, "email");` |
+| `table_add(t, r)` | Add record to table | `table_add(users, new_user);` |
+| `table_count(t)` | Number of records | `int n = table_count(t);` |
 
-Tooling
+## Tooling
 
-app_info
+### app_info
 
 Deep introspection of application state via the CLI:
 
@@ -503,7 +511,7 @@ app_info events             # pub/sub map
 app_info databases          # all databases and schemas
 ```
 
-Testing & Debugging
+### Testing & Debugging
 
 Integrated suites for every layer:
 
@@ -513,7 +521,7 @@ e2e_tests                   # playwright-powered browser tests
 app_debug                   # launches interactive debugger attached to dev server
 ```
 
-Production
+### Production
 
 Build optimized deployment environments. The resulting image contains only your compiled application and the MACH runtime, ready to deploy to any container registry or orchestration platform.
 
@@ -521,40 +529,40 @@ Build optimized deployment environments. The resulting image contains only your 
 app_build                   # creates a slim, optimized production Docker image
 ```
 
-Observability
+### Observability
 
 First-class telemetry using OpenTelemetry:
 
-· Telemetry Server: Visualizes logs and traces on port 4000 in dev mode.
-· Hot Path Tracking: Automatic profiling of pipelines to identify bottlenecks.
-· Error Aggregation: Unified reporting across all reactors.
+- **Telemetry Server:** Visualizes logs and traces on port 4000 in dev mode.
+- **Hot Path Tracking:** Automatic profiling of pipelines to identify bottlenecks.
+- **Error Aggregation:** Unified reporting across all reactors.
 
-Editor
+### Editor
 
 Built-in terminal-based editor optimized for the MACH workflow. Supports highlighting for C, Mustache, and SQL, and is integrated with the HMR system for instant save-to-reload. Includes full LSP support for intelligent code completion and diagnostics.
 
-AI Assistant
+### AI Assistant
 
-Built-in AI assistant in the TUI trained for MACH/IDEAL. Uses app_info and topology to generate code that understands your specific routes, queries, and events.
+Built-in AI assistant in the TUI trained for MACH/IDEAL. Uses `app_info` and topology to generate code that understands your specific routes, queries, and events.
 
-How It Works
+## How It Works
 
-IDEAL Philosophy
+### IDEAL Philosophy
 
-· Interfaces are Deep: Simple interfaces backed by deep functionality.
-· Domain Centred: Each module owns exactly one responsibility.
-· Encapsulated: Internal mechanics remain private.
-· Autonomous: Modules are fully self-contained.
-· Local: All related code is co-located.
+- **Interfaces are Deep:** Simple interfaces backed by deep functionality.
+- **Domain Centred:** Each module owns exactly one responsibility.
+- **Encapsulated:** Internal mechanics remain private.
+- **Autonomous:** Modules are fully self-contained.
+- **Local:** All related code is co-located.
 
-Data-Oriented Pipelines
+### Data-Oriented Pipelines
 
-config executes once at boot to construct an optimized execution graph. Requests are sequential executions of pre-warmed pipelines.
+`config` executes once at boot to construct an optimized execution graph. Requests are sequential executions of pre-warmed pipelines.
 
-Multi-Reactor
+### Multi-Reactor
 
 Each CPU core runs an independent reactor event loop. Async boundaries are handled between steps, scaling across cores without threads or locks in application code.
 
-Memory Management
+### Memory Management
 
-Uses an arena pool allocator per reactor. Each pipeline gets its own arena, which is freed automatically when the pipeline finishes. Use allocate() for temporary allocations; they live for the duration of the pipeline. For memory obtained from external libraries (e.g., via malloc), register it with defer_free() to have it cleaned up automatically at the end of the request.
+Uses an arena pool allocator per reactor. Each pipeline gets its own arena, which is freed automatically when the pipeline finishes. Use `allocate()` for temporary allocations; they live for the duration of the pipeline. For memory obtained from external libraries (e.g., via `malloc`), register it with `defer_free()` to have it cleaned up automatically at the end of the request.
