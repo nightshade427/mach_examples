@@ -99,8 +99,8 @@ A module encapsulates its own routes, databases, and templates. Modules are comp
 
 Example: A simple todos module that provides its own database and routes.
 
+In ./todos/todos.c:
 ```c
-// todos/todos.c
 #include <mach.h>
 #include <sqlite.h>
 
