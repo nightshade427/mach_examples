@@ -1,6 +1,6 @@
 # MACH
 
-**Modern Asynchronous C Hypermedia** - a web framework that combines the speed of C with a high-level, declarative API.
+Modern Asynchronous C Hypermedia is a web framework that combines the speed of C with a high-level, declarative API.
 
 Declarative config, compiled and hot-reloaded automatically. No garbage collector, no interpreter, no VM, no package managers, no build scripts.
 
@@ -121,10 +121,6 @@ A typical multi-module directory structure:
     ├── home.mustache.html
     └── 404.mustache.html
 ```
-
-### Config & Scopes
-
-Everything in MACH is declared in config structs. Definitions can be scoped to the application, module, resource, or specific URL level.
 
 ### Resolution
 
